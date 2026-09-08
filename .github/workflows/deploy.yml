@@ -1,0 +1,82 @@
+# Publishes each folder in sites/ to its own GitHub Pages repo.
+#
+# GitHub Pages serves exactly ONE custom domain per repository, so two domains
+# need two Pages repos. This keeps a single place to work: the repos it pushes
+# to are build output and should never be edited by hand.
+#
+# Needs a repository secret PAGES_TOKEN: a fine-grained personal access token
+# with "Contents: read and write" on both target repos.
+
+name: Deploy sites
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "sites/**"
+      - "shared/**"
+      - "sites.json"
+      - "tools/build.py"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Two deploys at once would race to force-push the same branches.
+concurrency:
+  group: deploy-sites
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.read.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: read
+        # sites.json is the single source of truth for domain and target repo,
+        # so the mapping is never written twice.
+        run: echo "matrix=$(jq -c '{include: .sites}' sites.json)" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: plan
+    runs-on: ubuntu-latest
+    strategy:
+      # One broken site must not stop the other from shipping.
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build ${{ matrix.name }}
+        run: python3 tools/build.py "${{ matrix.name }}"
+
+      - name: Check the output before touching the live repo
+        run: |
+          out="out/${{ matrix.name }}"
+          # A force-push of an empty or CNAME-less tree is how a custom domain
+          # silently reverts to <user>.github.io. Refuse instead.
+          test -s "$out/CNAME" || { echo "::error::$out/CNAME is missing or empty"; exit 1; }
+          test -f "$out/index.html" || { echo "::error::$out/index.html is missing"; exit 1; }
+          [ "$(cat "$out/CNAME")" = "${{ matrix.domain }}" ] \
+            || { echo "::error::CNAME does not say ${{ matrix.domain }}"; exit 1; }
+          echo "$out: $(find "$out" -type f | wc -l) files, CNAME $(cat "$out/CNAME")"
+
+      - name: Publish to ${{ matrix.repo }}
+        env:
+          TOKEN: ${{ secrets.PAGES_TOKEN }}
+        run: |
+          test -n "$TOKEN" || { echo "::error::PAGES_TOKEN secret is not set"; exit 1; }
+          cd "out/${{ matrix.name }}"
+          git init -q -b main
+          git config user.name  "amzixz-sites deploy"
+          git config user.email "deploy@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Deploy ${{ github.sha }} from amzixz-sites"
+          # Force-push: the published repo mirrors this build exactly, and its
+          # history is not interesting - the history lives in this repo.
+          git push --force --quiet \
+            "https://x-access-token:$TOKEN@github.com/${{ matrix.repo }}.git" main
+          echo "published ${{ matrix.domain }} -> ${{ matrix.repo }}"

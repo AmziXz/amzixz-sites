@@ -1,0 +1,17 @@
+{
+  "name": "amzixz-site-tooling",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local tooling for the AmziXz static site. The site itself has no build step and ships no dependencies; nothing here is served by GitHub Pages.",
+  "license": "MIT",
+  "scripts": {
+    "start": "node serve.js",
+    "serve": "node serve.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "typescript": "^5.9.3"
+  }
+}

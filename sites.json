@@ -1,0 +1,15 @@
+{
+  "_basis": "Which folder publishes to which domain and repo. Read by both tools/build.py and the deploy workflow, so the mapping is stated once.",
+  "sites": [
+    {
+      "name": "main",
+      "domain": "amzixz.id.lv",
+      "repo": "AmziXz/amzixz.github.io"
+    },
+    {
+      "name": "services",
+      "domain": "services.amzixz.id.lv",
+      "repo": "AmziXz/services.amzixz.id.lv"
+    }
+  ]
+}

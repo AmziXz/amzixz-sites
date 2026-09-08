@@ -1,0 +1,19 @@
+# This repo is served directly by GitHub Pages, so anything committed here
+# is public. Keep local tooling output out of it.
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Agent tooling. This lives in the project folder on purpose — the work moves
+# between computers on an external drive, so config that isn't here isn't there
+# either. It is ignored rather than committed because this repo is public and
+# Pages-served: committing it would publish local settings and working notes.
+.claude/
+
+# Local tooling only. package.json and package-lock.json ARE committed so the
+# toolchain is reproducible on the next machine; the installed tree is not.
+node_modules/

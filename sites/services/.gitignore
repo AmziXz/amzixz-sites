@@ -1,0 +1,13 @@
+# This repo is served directly by GitHub Pages, so anything committed here
+# is public. Keep local tooling output out of it.
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Agent tooling and local installs
+.claude/
+node_modules/

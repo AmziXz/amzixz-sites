@@ -1,0 +1,12 @@
+# Normalise every text file to LF in the repository. Without this, files
+# written by editors and scripts drift between CRLF and LF and each flip shows
+# up as a whole-file rewrite in the diff.
+* text=auto eol=lf
+
+# Binary: never touch these.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.ico  binary
+*.woff  binary
+*.woff2 binary

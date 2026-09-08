@@ -1,0 +1,19 @@
+{
+  // Local tooling only. The published site is plain HTML/CSS/JS with no build
+  // step — assets/ is deliberately excluded so nothing here can start emitting
+  // generated JavaScript over the hand-written files Pages serves.
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2023"],
+    "strict": true,
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["serve.js"],
+  "exclude": ["node_modules", "assets", "docs", ".claude"]
+}
