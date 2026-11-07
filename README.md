@@ -1,4 +1,24 @@
-# amzixz-sites
+# amzixz-sites — RETIRED (2026-11-08)
+
+**This repo is no longer the source of truth and no longer deploys anything.**
+
+Work happens directly in the two live repos now:
+
+| Site | Domain | Repo |
+|---|---|---|
+| Main | amzixz.me | `AmziXz/amzixz.github.io` |
+| Studios | studios.amzixz.me | `AmziXz/AmziXz-Studios` |
+
+Why it was retired: the redesigns of both sites were committed straight into
+those two repos through pull requests during October and November 2026. This
+repo still held the September layout, so its deploy workflow would have
+force-pushed that older design over both live sites. The workflow has been
+deleted and disabled; `sites/` here is a September snapshot, kept only for
+history.
+
+The old documentation follows, and describes a layout that is no longer live.
+
+---
 
 Both websites, one repository.
 
